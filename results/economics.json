@@ -1,0 +1,57 @@
+{
+  "roi_decomposition": {
+    "hypothesis": "H4 mono-site hospital perspective",
+    "tag": "mono-site ~115,000 visits/year; hospital net (all modelled channels); R2-anchored; 100% of one site",
+    "visits_per_year": 115000,
+    "tco_annual_eur": 254000.0,
+    "horizon_years": 3,
+    "roi_flat_3y_undiscounted": 4.75,
+    "roi_ramp_50_80_100_undiscounted": 3.4083333333333328,
+    "roi_ramp_discount_3pct": 3.379982367595199,
+    "roi_ramp_discount_2p5_HAS": 3.3846525096525095,
+    "published_roi_480pct_matches_flat": true,
+    "conservative_external_floor": 2.1,
+    "do_not_publish_eur_per_visit": true,
+    "note": "The 480% figure matches an undiscounted 3-year mono-site ratio without ramp-up. With 50/80/100% ramp-up and 3% discount the ROI is lower. External conservative communication uses the 210% floor."
+  },
+  "psa": {
+    "tag": "mono-site ~115,000 visits/year; hospital net (all modelled channels); R2-anchored; 100% of one site",
+    "n_iterations": 8000,
+    "qaly_mechanism": "QALYs accrue only from avoided Level 1-2 undertriage episodes (Beta(3,17) increment), not from every correctly labelled visit. Utility increments follow emergency-care estimates in Castillo et al.",
+    "roi_median": 3.336509857395682,
+    "roi_crI95": [
+      1.0929281763363023,
+      7.792729655848839
+    ],
+    "p_dominant": 1.0,
+    "icer_conditional_nondominant_median": null,
+    "published_icer_in_run_anchor": 1840.0,
+    "ceac_50000": 1.0,
+    "ceac_10000": 1.0,
+    "published_ceac_50000_in_run": 0.994,
+    "wtp_note": "France has no official ICER threshold; 50,000 is a HAS reference value",
+    "nmb_mean_at_50000": 5887492.227162498,
+    "unpublished": {
+      "reason": "SEED: perspective \u20ac/passage values are hors-run until in-run reallocation",
+      "blocked_keys": [
+        "net_hospital_eur_per_visit",
+        "net_am_eur_per_visit",
+        "net_societal_eur_per_visit"
+      ]
+    }
+  },
+  "national_conservative": {
+    "tag": "national 20M visits / 650 EDs; undertriage adverse-event channel only; R2; implicit capture 8-13%",
+    "range_eur_per_year": [
+      49500000.0,
+      79500000.0
+    ],
+    "n_eds": 650,
+    "capture": [
+      0.08,
+      0.13
+    ],
+    "channels": "undertriage adverse events only \u2014 not the four-channel total",
+    "regime": "R2 \u2014 R1 must not feed national projections"
+  }
+}

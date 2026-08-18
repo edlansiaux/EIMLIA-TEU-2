@@ -1,311 +1,138 @@
-# EIMLIA — Explainable AI for Emergency Department Triage and Simulation
+# EIMLIA-TEU-2
 
-## Overview
+Pre-clinical **evaluation framework** for AI-assisted emergency-department triage. The contribution is methodological: it separates **algorithmic approximation (R1)** from **clinical validity (R2)**, injects **class-conditional** residual errors into a hybrid DES–MAS, and reports health-economic results with explicit perimeters.
 
-**EIMLIA** is an end-to-end research framework designed to evaluate, optimize, and simulate emergency department (ED) triage processes using artificial intelligence, process mining, and hybrid healthcare simulation.
+This is **not** a new triage algorithm. TRIAGEMASTER, URGENTIAPARSE and EMERGINET were published elsewhere and are used here as instruments.
 
-The project combines:
-
-- Natural Language Processing (NLP) for clinical triage prediction
-- Machine Learning and Deep Learning models
-- FRENCH Triage V2 guideline-based target generation
-- Process Mining using PM4Py
-- Hybrid Simulation (Discrete Event Simulation + Agent-Based Modeling)
-- Health-economic evaluation (ROI, ICER, TCO)
-
-The objective is to assess whether AI-assisted triage can improve patient flow, reduce waiting times, decrease overcrowding, and increase triage consistency in emergency departments.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## Project Workflow
+## Dual-regime protocol
 
-### 1. Data Preparation
+| Regime | Training target | Evaluation reference | What a high score means |
+|--------|-----------------|----------------------|-------------------------|
+| **R1** | FRENCH reconstructed labels | Same FRENCH labels | The model recovered the deterministic scale |
+| **R2** | FRENCH reconstructed labels | External 5-physician consensus | The model agrees with clinicians |
 
-The notebook begins by:
+If FRENCH and experts disagree, an R1-perfect model **automatically** disagrees with experts. That is a label artefact, not evidence of a new medical algorithm.
 
-- Importing raw emergency department datasets (2018–2023)
-- Merging multiple CSV files into a unified database
-- Cleaning and harmonizing variables
-- Preparing structured and unstructured clinical data
+Expert moderation is complete for **n = 400** of **3,000** planned cases. Only n = 400 is empirical R2. n = 3,000 figures are design-based projections.
 
-**Output:**
+### Empirical anchors (published R1 + completed R2 subset)
 
-```text
-fusion_totale_2018_2023.csv
+| Model | R1 κw (n = 68,108) | R2 κw n = 400 | 95% CI | Crosses 0.80? | L1–2 undertriage |
+|-------|--------------------|---------------|--------|---------------|------------------|
+| URGENTIAPARSE | 0.996 | 0.81 | [0.76, 0.85] | **yes** | 9.6% |
+| EMERGINET | 0.939 | 0.74 | [0.70, 0.79] | no (below) | 11.3% |
+| TRIAGEMASTER | 0.895 | 0.69 | [0.64, 0.75] | no (below) | 27.0% |
+
+Deployment bar: κw ≥ 0.80. Nurse baseline: 0.65. Tests against these bars are **threshold/superiority tests**, not two-arm non-inferiority.
+
+FRENCH vs expert on n = 400: κw ≈ 0.81 [0.77, 0.85] (ceiling for any R1-perfect model).
+
+---
+
+## Repository layout
+
+```
+EIMLIA-TEU-2/
+├── eimlia/                     # Canonical evaluation package
+│   ├── config.py               # Cohort sizes, tags, unpublished-value guards
+│   ├── eval/                   # Dual-regime kappa, bootstrap, threshold tests
+│   ├── simulation/             # Class-conditional confusion + priority DES
+│   └── economics/              # CHEERS PSA, ROI decomposition, national EI scenario
+├── scripts/run_eval_pipeline.py
+├── results/                    # JSON written by the pipeline (no patient data)
+├── manuscript/                 # IEEE source + compiled PDF
+├── Rapport.ipynb               # Historical end-to-end notebook (patient data not included)
+├── requirements.txt
+└── LICENSE
+```
+
+Patient-level extracts are **not** in this repository (CNIL MR-004 / GDPR). The pipeline reproduces CIs, confusion patterns, DES residual-error injection and economic labels from published anchors.
+
+---
+
+## Quick start
+
+```bash
+git clone https://github.com/edlansiaux/EIMLIA-TEU-2.git
+cd EIMLIA-TEU-2
+pip install -r requirements.txt
+python scripts/run_eval_pipeline.py
+```
+
+Outputs:
+
+- `results/dual_regime.json` — R1/R2 tables, FRENCH-vs-expert ceiling, threshold tests
+- `results/simulation.json` — class-conditional confusion and 40-replication DES
+- `results/economics.json` — mono-site ROI decomposition, PSA, national EI-only scenario
+
+Build the paper (XeLaTeX / tectonic):
+
+```bash
+cd manuscript
+tectonic -X compile main.tex
 ```
 
 ---
 
-### 2. FRENCH Triage Ground Truth Generation
+## Simulation: why confusion matrices, not a scalar kappa
 
-Instead of training models directly on nurse-assigned triage levels, EIMLIA computes an **ideal FRENCH triage level** using the official SFMU FRENCH Triage V2 algorithm.
+A single weighted kappa does not determine clinically relevant errors. Two models with similar κw can differ by a factor of three in Level 1–2 undertriage (9.6% vs 27.0% on n = 400). Residual AI errors in the DES–MAS are sampled from `P(ŷ | y)`, estimated on the completed expert subset, then passed through a Bernoulli acceptance gate (p_acc = 0.85).
 
-This provides:
-
-- Standardized labels
-- Reduced inter-rater variability
-- Reproducible target generation
-
-The original nurse-assigned triage levels are preserved for comparison.
+Flow KPIs in the manuscript (DMS ≈ 31–37 min) come from the calibrated hybrid engine documented in `Rapport.ipynb`. The package `eimlia.simulation` is the **reproducible residual-error module** (class-conditional injection + independent replications).
 
 ---
 
-### 3. Exploratory Data Analysis
+## Health economics (perimeter-tagged reporting)
 
-The notebook performs:
+Every figure must be tagged **(perimeter; channels; regime; penetration)**.
 
-- Feature distribution analysis
-- Missing data inspection
-- CCMU transformation
-- Triage-level distribution analysis
-- Correlation analysis
-- Visual exploratory statistics
+| Output | Tag | Status |
+|--------|-----|--------|
+| ROI 480% [210, 1250] | mono-site ~115k visits/year; hospital; R2; 100% of one site | Undiscounted 3-year, no ramp-up |
+| ROI ≈ 341% | same, with 50/80/100% ramp-up | Prefer this for planning |
+| Conservative floor 210% | lower CrI | Use in external conservative communication |
+| ICER 1,840 €/QALY | in-run | Citable; France has no official threshold |
+| CEAC 99.4% at 50,000 €/QALY | in-run | HAS reference WTP, not a legal bar |
+| 50–80 M€/year | national; **undertriage AE channel only**; R2; capture 8–13% | Conservative derived scenario |
 
----
+**Not published here:** perspective-split €/visit reallocations that are not yet regenerated inside the PSA.
 
-## AI Models
+QALYs accrue from **avoided Level 1–2 undertriage**, not from every correct five-class label (Beta(3,17) increment; Castillo et al. emergency utilities). Discount 3% base, 2.5% HAS sensitivity. Indirect societal (human-capital) layer excluded from the base case (conservative).
 
-### TRIAGEMASTER
-
-**Architecture**
-
-- Doc2Vec text embeddings
-- Multi-Layer Perceptron (MLP)
-- SHAP explainability
-
-**Purpose**
-
-Baseline explainable NLP triage model.
+Calibration cohort **340,536** = multi-year extract, **not** an annual volume. Simulation perimeter **600,000 visits/year**.
 
 ---
 
-### URGENTIAPARSE
+## What the historical notebook contains
 
-**Architecture**
-
-- FlauBERT transformer embeddings
-- XGBoost classifier
-
-**Purpose**
-
-Advanced French-language clinical text understanding.
+`Rapport.ipynb` is the original CHU Lille pipeline (merge 2018–2023, FRENCH reconstruction, model training, PM4Py, SimPy/Mesa, deterministic TCO). It requires local `data/brutes` files that are not distributed. Treat `eimlia/` as the evaluation code that matches the revised manuscript. The notebook’s deterministic ROI 10,260% / ICER 93 €/QALY is **withdrawn** and superseded by the PSA.
 
 ---
 
-### EMERGINET
+## Ethics
 
-**Architecture**
-
-- JEPA-inspired representation learning
-- VICReg self-supervised regularization
-- Deep neural classifier
-
-**Purpose**
-
-State-of-the-art triage prediction framework.
+CESREES clearance; Health Data Hub 27797006; GDPR; CNIL MR-004. No patient-level data in git.
 
 ---
 
-## Training Pipeline
+## Citation
 
-The dataset is split into:
-
-```text
-Train:      64%
-Validation: 16%
-Test:       20%
+```bibtex
+@inproceedings{lansiaux2026eimlia,
+  title  = {Disentangling Algorithmic Approximation from Clinical Validity
+            in AI Emergency Triage},
+  author = {Lansiaux, \'Edouard and Zgaya-Biau, Hayfa and Ammi, Mehdi},
+  year   = {2026}
+}
 ```
 
-Training includes:
-
-- Stratified sampling
-- Early stopping
-- Model persistence
-- Comparative evaluation
-
-### Evaluation Metrics
-
-- Accuracy
-- Weighted F1-score
-- Mean Absolute Error (MAE)
-- Cohen's Kappa
-- Confusion matrices
-
----
-
-## Process Mining
-
-The framework implements a complete process mining workflow using **PM4Py**.
-
-### Step 1 – Event Log Generation
-
-Synthetic event logs are generated from emergency department workflows.
-
-### Step 2 – Process Discovery
-
-Inductive Miner is used to discover actual patient-care pathways.
-
-### Step 3 – Conformance Checking
-
-Evaluation of process quality through:
-
-- Token Replay
-- Precision
-- Fitness
-- Generalization
-
-### Step 4 – KPI Calibration
-
-Empirical distributions are extracted and calibrated for simulation.
-
-### Step 5 – Ecological Validation
-
-Simulation outputs are compared against real hospital data.
-
----
-
-## Hybrid Simulation Framework
-
-EIMLIA integrates two complementary paradigms.
-
-### Discrete Event Simulation (DES)
-
-Implemented using SimPy.
-
-Models:
-
-- Patient arrivals
-- Waiting queues
-- Resource utilization
-- Throughput
-
-### Agent-Based Modeling (ABM)
-
-Implemented using Mesa.
-
-Models:
-
-- Clinician behavior
-- Decision variability
-- Human-system interactions
-
-### Hybrid DES + ABM
-
-Combines operational flow and human behavior within a single simulation environment.
-
----
-
-## Scenario Analysis
-
-Several organizational scenarios can be evaluated:
-
-- Current practice (baseline)
-- TRIAGEMASTER-assisted triage
-- URGENTIAPARSE-assisted triage
-- EMERGINET-assisted triage
-- Hybrid deployment strategies
-
-Stress-testing scenarios include:
-
-- Increased patient volume
-- Staffing shortages
-- Epidemic surges
-- Resource constraints
-
----
-
-## Economic Evaluation
-
-### Cost Analysis
-
-- Implementation costs
-- Infrastructure costs
-- Maintenance costs
-
-### Outcome Analysis
-
-- Reduced waiting times
-- Reduced overcrowding
-- Improved throughput
-
-### Economic Metrics
-
-- Return on Investment (ROI)
-- Incremental Cost-Effectiveness Ratio (ICER)
-- Total Cost of Ownership (TCO)
-
----
-
-## Statistical Validation
-
-Comparative analyses include:
-
-- Bootstrap confidence intervals
-- Cohen's κ estimation
-- Z-tests
-- Multiple-comparison correction (Bonferroni)
-
-These procedures ensure robust comparison between AI-assisted and standard triage workflows.
-
----
-
-## Expected Outputs
-
-The notebook produces:
-
-- Trained AI models
-- Triage predictions
-- Comparative performance reports
-- Process mining models
-- Simulation results
-- Scenario comparison dashboards
-- Economic evaluation reports
-- Statistical validation summaries
-
----
-
-## Technology Stack
-
-### Data Science
-
-- Python
-- Pandas
-- NumPy
-- SciPy
-
-### Machine Learning
-
-- Scikit-learn
-- XGBoost
-- Doc2Vec
-- FlauBERT
-
-### Explainability
-
-- SHAP
-
-### Process Mining
-
-- PM4Py
-
-### Simulation
-
-- SimPy
-- Mesa
-
-### Visualization
-
-- Matplotlib
-- Seaborn
-
----
-
-## Research Objective
-
-EIMLIA aims to provide a reproducible framework for studying how explainable artificial intelligence, process mining, and hybrid simulation can support emergency department decision-making, improve triage reliability, and evaluate organizational interventions before real-world deployment.
-
----
+Related model papers: BDCAT 2025 and JMIR Medical Informatics 2026 (TIAEU architectures).
 
 ## License
 
-This project is intended for academic and research purposes. Clinical deployment requires external validation, regulatory review, and compliance with applicable healthcare regulations.
+MIT. Clinical use requires prospective validation and regulatory review.

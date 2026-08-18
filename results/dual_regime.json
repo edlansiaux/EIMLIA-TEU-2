@@ -1,0 +1,313 @@
+{
+  "models": {
+    "URGENTIAPARSE": {
+      "R1": {
+        "kappa_w_published": 0.996,
+        "ci95_published": [
+          0.995,
+          0.996
+        ],
+        "kappa_w_reproduced": 0.9969255947821195,
+        "n": 68108,
+        "status": "observed vs FRENCH reconstructed labels",
+        "tag": "single-site calibration; none (predictive); R1; n/a"
+      },
+      "R2_n400": {
+        "kappa_w_point": 0.81,
+        "kappa_w_reproduced": 0.8082844361819554,
+        "ci95": [
+          0.7599154033074301,
+          0.8513798430823735
+        ],
+        "n": 400,
+        "critical_undertriage": 0.09615384615384616,
+        "confusion": [
+          [
+            9,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            30,
+            3,
+            2,
+            0
+          ],
+          [
+            7,
+            14,
+            106,
+            10,
+            6
+          ],
+          [
+            0,
+            6,
+            19,
+            105,
+            13
+          ],
+          [
+            0,
+            0,
+            3,
+            2,
+            57
+          ]
+        ],
+        "status": "empirical on completed expert subset",
+        "tag": "n=400 moderated subset; none (predictive); R2 empirical; n/a",
+        "deployment_threshold_test": {
+          "mean": 0.8059781248216912,
+          "ci95": [
+            0.7582834359676842,
+            0.8463497434159003
+          ],
+          "threshold": 0.8,
+          "p_exceed": 0.6125,
+          "ci_crosses_threshold": true,
+          "test_name": "one-sided threshold/superiority vs fixed bar",
+          "not_noninferiority": true
+        },
+        "vs_nurse_0.65": {
+          "mean": 0.8059781248216912,
+          "ci95": [
+            0.7582834359676842,
+            0.8463497434159003
+          ],
+          "threshold": 0.65,
+          "p_exceed": 1.0,
+          "ci_crosses_threshold": false,
+          "test_name": "one-sided threshold/superiority vs fixed bar",
+          "not_noninferiority": true
+        }
+      },
+      "R2_n3000_projection": {
+        "kappa_w_point": 0.81,
+        "ci95_projected": [
+          0.7907960975315148,
+          0.8292039024684853
+        ],
+        "n_target": 3000,
+        "n_observed": 400,
+        "method": "hold n=400 point estimate; scale bootstrap half-width by sqrt(n400/n3000)*1.15 for unobserved remainder",
+        "status": "projection \u2014 not a completed measurement"
+      },
+      "R1_minus_R2": 0.18599999999999994
+    },
+    "EMERGINET": {
+      "R1": {
+        "kappa_w_published": 0.939,
+        "ci95_published": [
+          0.939,
+          0.94
+        ],
+        "kappa_w_reproduced": 0.9691503091132705,
+        "n": 68108,
+        "status": "observed vs FRENCH reconstructed labels",
+        "tag": "single-site calibration; none (predictive); R1; n/a"
+      },
+      "R2_n400": {
+        "kappa_w_point": 0.74,
+        "kappa_w_reproduced": 0.7456120534705784,
+        "ci95": [
+          0.6986975714161426,
+          0.787495473924623
+        ],
+        "n": 400,
+        "critical_undertriage": 0.11320754716981132,
+        "confusion": [
+          [
+            16,
+            5,
+            1,
+            0,
+            0
+          ],
+          [
+            10,
+            16,
+            4,
+            1,
+            0
+          ],
+          [
+            7,
+            33,
+            57,
+            31,
+            6
+          ],
+          [
+            0,
+            6,
+            33,
+            74,
+            37
+          ],
+          [
+            0,
+            0,
+            2,
+            14,
+            47
+          ]
+        ],
+        "status": "empirical on completed expert subset",
+        "tag": "n=400 moderated subset; none (predictive); R2 empirical; n/a",
+        "deployment_threshold_test": {
+          "mean": 0.7430795481915987,
+          "ci95": [
+            0.6923128242906906,
+            0.788919445501778
+          ],
+          "threshold": 0.8,
+          "p_exceed": 0.0025,
+          "ci_crosses_threshold": false,
+          "test_name": "one-sided threshold/superiority vs fixed bar",
+          "not_noninferiority": true
+        },
+        "vs_nurse_0.65": {
+          "mean": 0.7430795481915987,
+          "ci95": [
+            0.6923128242906906,
+            0.788919445501778
+          ],
+          "threshold": 0.65,
+          "p_exceed": 1.0,
+          "ci_crosses_threshold": false,
+          "test_name": "one-sided threshold/superiority vs fixed bar",
+          "not_noninferiority": true
+        }
+      },
+      "R2_n3000_projection": {
+        "kappa_w_point": 0.74,
+        "ci95_projected": [
+          0.7213559645325016,
+          0.7586440354674984
+        ],
+        "n_target": 3000,
+        "n_observed": 400,
+        "method": "hold n=400 point estimate; scale bootstrap half-width by sqrt(n400/n3000)*1.15 for unobserved remainder",
+        "status": "projection \u2014 not a completed measurement"
+      },
+      "R1_minus_R2": 0.19899999999999995
+    },
+    "TRIAGEMASTER": {
+      "R1": {
+        "kappa_w_published": 0.895,
+        "ci95_published": [
+          0.894,
+          0.895
+        ],
+        "kappa_w_reproduced": 0.9470749418822947,
+        "n": 68108,
+        "status": "observed vs FRENCH reconstructed labels",
+        "tag": "single-site calibration; none (predictive); R1; n/a"
+      },
+      "R2_n400": {
+        "kappa_w_point": 0.69,
+        "kappa_w_reproduced": 0.7015911468369762,
+        "ci95": [
+          0.6447927757220537,
+          0.7507127358937641
+        ],
+        "n": 400,
+        "critical_undertriage": 0.2698412698412698,
+        "confusion": [
+          [
+            7,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            10,
+            29,
+            12,
+            3,
+            0
+          ],
+          [
+            4,
+            20,
+            67,
+            19,
+            8
+          ],
+          [
+            0,
+            15,
+            24,
+            88,
+            36
+          ],
+          [
+            0,
+            0,
+            4,
+            6,
+            46
+          ]
+        ],
+        "status": "empirical on completed expert subset",
+        "tag": "n=400 moderated subset; none (predictive); R2 empirical; n/a",
+        "deployment_threshold_test": {
+          "mean": 0.6981667626174963,
+          "ci95": [
+            0.6342840135770124,
+            0.7533132809638219
+          ],
+          "threshold": 0.8,
+          "p_exceed": 0.0,
+          "ci_crosses_threshold": false,
+          "test_name": "one-sided threshold/superiority vs fixed bar",
+          "not_noninferiority": true
+        },
+        "vs_nurse_0.65": {
+          "mean": 0.6981667626174963,
+          "ci95": [
+            0.6342840135770124,
+            0.7533132809638219
+          ],
+          "threshold": 0.65,
+          "p_exceed": 0.9325,
+          "ci_crosses_threshold": true,
+          "test_name": "one-sided threshold/superiority vs fixed bar",
+          "not_noninferiority": true
+        }
+      },
+      "R2_n3000_projection": {
+        "kappa_w_point": 0.69,
+        "ci95_projected": [
+          0.6677610119341637,
+          0.7122389880658362
+        ],
+        "n_target": 3000,
+        "n_observed": 400,
+        "method": "hold n=400 point estimate; scale bootstrap half-width by sqrt(n400/n3000)*1.15 for unobserved remainder",
+        "status": "projection \u2014 not a completed measurement"
+      },
+      "R1_minus_R2": 0.20500000000000007
+    }
+  },
+  "protocol": {
+    "mean_R1_R2_gap": 0.19666666666666666,
+    "gap_language": "The ~0.18 mean drop is the n=400 empirical gap, not a replicated multicentre finding. It is consistent with FRENCH-vs-expert disagreement and should not be described as confirmed until n=3,000 moderation is complete.",
+    "r1_is_not_expert": "R1 never uses physician labels. Close R1 agreement means the model matches the reconstructed FRENCH mapping. If FRENCH and experts disagree, R1-perfect models automatically disagree with experts."
+  },
+  "french_vs_expert": {
+    "n": 400,
+    "kappa_w": 0.8110879790269103,
+    "ci95": [
+      0.7660968824610701,
+      0.852938201065381
+    ],
+    "exact_disagreement": 0.2775,
+    "note": "If a classifier recovers FRENCH (R1~1), its R2 kappa is bounded by FRENCH-vs-expert agreement. Label mismatch, not model failure, then drives most of the R1-R2 drop."
+  }
+}
